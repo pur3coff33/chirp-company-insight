@@ -31,8 +31,8 @@ The **Company Details Finder** is a Next.js application designed to provide user
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/yourusername/company-details-finder.git
-   cd company-details-finder
+   git clone https://github.com/pur3coff33/chirp-company-insight.git
+   cd chirp-company-insight
    ```
 
 2. **Install node_modules**:
