@@ -1,101 +1,179 @@
-import Image from "next/image";
+'use client'; // This line marks the component as a Client Component
+
+import { SearchDomain } from '@/components/search/search-domain';
+import { useState } from 'react';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [companyApiDetails, setCompanyApiDetails] = useState<{
+    company_info_api: FLPApiResponse | null; // Allow company_info_api to be null
+    ai_summary: string | null; // Allow ai_summary to be null
+  } | null>(null); // Initialize as null to represent no data
+  const [error, setError] = useState<string | null>(null); // State to hold error messages
+  const [loading, setLoading] = useState<boolean>(false); // State for loading status
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const searchCompany = async (domain: string) => {
+    setError(null); // Reset error on new search
+    setLoading(true); // Set loading state to true
+    try {
+      const response = await fetch(`/api/company/${domain}`, {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error.message);
+      }
+      const { data } = await response.json();
+      if (data) {
+        setCompanyApiDetails(data);
+      } else {
+        setCompanyApiDetails(null); // Reset to null if no data is returned
+      }
+    } catch (err: any) {
+      console.log(err);
+      setError(err.message); // Set error message to state
+    } finally {
+      setLoading(false); // Reset loading state after API call
+    }
+  };
+
+  return (
+    <div className="font-[family-name:var(--font-geist-sans)]">
+      <main>
+        <SearchDomain search={searchCompany} />
+        <div className="w-full max-w-3xl mx-auto p-3">
+          <hr className="w-full my-2" />
+          <div className="w-full">
+            <h2 className="text-xl font-bold mb-3 text-center">Company Details</h2>
+
+            {/* Error handling UI */}
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded relative mb-4">
+                <strong>Error:</strong> {error}
+              </div>
+            )}
+
+            {/* Loading state */}
+            {loading && (
+              <div className="text-center text-gray-500 mt-4">
+                <p>Loading company details...</p>
+              </div>
+            )}
+
+            {/* No data handling UI */}
+            {!loading && companyApiDetails === null && (
+              <div className="text-center text-gray-500 mt-4">
+                <p>No company details available. Please search for a valid domain.</p>
+              </div>
+            )}
+
+            {/* Company details display */}
+            {!loading && companyApiDetails && (
+              <div className="space-y-3">
+                <p className="text-gray-700">
+                  <span className="font-semibold">✨ Summary:</span>
+                  <br />
+                  <span className="text-gray-600">{companyApiDetails?.ai_summary || '--'}</span>
+                </p>
+
+                <div className="flex gap-2">
+                  <span className="font-medium text-gray-700">Company:</span>
+                  <span className="text-gray-600">
+                    {companyApiDetails?.company_info_api?.data?.company_name || '--'}
+                  </span>
+                </div>
+
+                <div className="flex gap-2">
+                  <span className="font-medium text-gray-700">Founded:</span>
+                  <span className="text-gray-600">
+                    {companyApiDetails?.company_info_api?.data?.year_founded || '--'}
+                  </span>
+                </div>
+
+                <div className="flex gap-2">
+                  <span className="font-medium text-gray-700">Domain:</span>
+                  <span className="text-gray-600">{companyApiDetails?.company_info_api?.data?.domain || '--'}</span>
+                </div>
+
+                <div className="flex gap-2">
+                  <span className="font-medium text-gray-700">Website:</span>
+                  <span className="text-gray-600">
+                    {companyApiDetails?.company_info_api?.data?.website ? (
+                      <a
+                        href={companyApiDetails.company_info_api.data.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        {companyApiDetails.company_info_api.data.website}
+                      </a>
+                    ) : (
+                      '--'
+                    )}
+                  </span>
+                </div>
+
+                <div className="flex gap-2">
+                  <span className="font-medium text-gray-700">Email:</span>
+                  <span className="text-gray-600">
+                    {companyApiDetails?.company_info_api?.data?.email ? (
+                      <a
+                        href={`mailto:${companyApiDetails.company_info_api.data.email}`}
+                        className="text-blue-600 underline"
+                      >
+                        {companyApiDetails.company_info_api.data.email}
+                      </a>
+                    ) : (
+                      '--'
+                    )}
+                  </span>
+                </div>
+
+                <div className="flex gap-2">
+                  <span className="font-medium text-gray-700">Phone:</span>
+                  <span className="text-gray-600">
+                    {companyApiDetails?.company_info_api?.data?.phone ? (
+                      <a
+                        href={`tel:${companyApiDetails.company_info_api.data.phone}`}
+                        className="text-blue-600 underline"
+                      >
+                        {companyApiDetails.company_info_api.data.phone}
+                      </a>
+                    ) : (
+                      '--'
+                    )}
+                  </span>
+                </div>
+
+                <p className="text-gray-700">
+                  <span className="font-semibold">Specialties:</span>
+                  <br />
+                  <span className="text-gray-600">
+                    {companyApiDetails?.company_info_api?.data?.specialties || '--'}
+                  </span>
+                </p>
+
+                <div className="flex gap-2">
+                  <span className="font-medium text-gray-700">Type:</span>
+                  <span className="text-gray-600">{companyApiDetails?.company_info_api?.data?.type || '--'}</span>
+                </div>
+
+                <div className="flex gap-2">
+                  <span className="font-medium text-gray-700">HQ:</span>
+                  <span className="text-gray-600">
+                    {companyApiDetails?.company_info_api?.data?.hq_full_address || '--'}
+                  </span>
+                </div>
+
+                <div className="flex flex-col">
+                  <span className="font-medium text-gray-700">Description:</span>
+                  <p className="text-gray-600">{companyApiDetails?.company_info_api?.data?.description || '--'}</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center"></footer>
     </div>
   );
 }

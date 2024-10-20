@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Company Details Finder
+
+## Summary
+
+The **Company Details Finder** is a Next.js application designed to provide users with detailed information about companies based on their domain names. The application leverages the OpenAI API for generating summaries and uses the Fresh LinkedIn Profile Data API to fetch various company-related details such as company name, founding year, domain, website, email, specialties, type, headquarters address, and description.
+
+### Features
+
+- **Domain Search**: Users can input a company domain to retrieve relevant details.
+- **Real-time Data Fetching**: The application communicates with external APIs to fetch up-to-date information.
+- **Error Handling**: Graceful handling of errors when API requests fail or when invalid domains are provided.
+- **Loading States**: Users are informed of ongoing data fetching processes.
+
+## Technologies Used
+
+- **Next.js**: A React framework for building server-side rendered applications.
+- **OpenAI API**: For generating intelligent summaries based on the company data.
+- **Fresh LinkedIn Profile Data API**: To fetch detailed company information based on the domain provided by the user.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js
+- A code editor (e.g., Visual Studio Code)
+- Git (optional, for version control)
+- Yarn (Package Manager)
+
+### Installation
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/yourusername/company-details-finder.git
+   cd company-details-finder
+   ```
+
+2. **Install node_modules**:
+   Type the command to install all project dependencies
 
 ```bash
-npm run dev
-# or
+yarn install
+```
+
+2. **Set up environment variables**:  
+   Create a .env file in the root directory of the project and add your API keys:
+
+# OpenAI API Key
+
+OPENAI_API_KEY='sk-YourOpenAIAPIKeyHere' # Replace with your actual OpenAI API key
+
+# Fresh LinkedIn Profile Data API Key
+
+FLP_RAPID_API_KEY='YourFreshLinkedInProfileDataAPIKeyHere' # Replace with your actual Fresh API key
+
+3. **Starting dev mode**
+   To start dev server,
+
+```bash
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Usage
 
-## Learn More
+- 1. Enter a valid company domain in the search field.
+- 2. Click the search button to retrieve company details.
+- 3. If available, the application will display the company summary and other relevant information.
+- 4. In case of errors or loading states, appropriate messages will be displayed.
 
-To learn more about Next.js, take a look at the following resources:
+### AI Assisted Development
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+I used ChatGPT to assist in generating TypeScript types, refactoring code, and improving error handling cases, such as using regular expressions for data validation and parsing.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Challenges
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+I encountered challenges during the API integration process, specifically with the OpenAI API and the Fresh LinkedIn Profile Data API. Understanding the data formats and ensuring proper handling of API responses required significant effort.
