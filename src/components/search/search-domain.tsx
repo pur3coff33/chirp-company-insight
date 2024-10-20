@@ -19,6 +19,12 @@ export const SearchDomain: React.FC<{ search: (domain: string) => void }> = ({ s
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !error && domain) {
+      search(domain);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center items-center w-full p-5 mt-3">
       <h1 className="text-center font-bold text-3xl">Company Search Toolkit</h1>
@@ -31,6 +37,7 @@ export const SearchDomain: React.FC<{ search: (domain: string) => void }> = ({ s
           className="border border-gray-300 rounded-lg shadow-lg p-3 w-full max-w-sm"
           value={domain}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown} // Listen for keydown event
         />
         <button
           type="button"

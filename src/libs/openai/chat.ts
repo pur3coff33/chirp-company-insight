@@ -3,9 +3,7 @@ const OPENAI_API_URL = 'https://api.openai.com';
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? '';
 
 export const generateCompanySummary = async (companyDetailsJsonString: string) => {
-  const initialPrompt = `Given the company details in JSON format below, create a concise summary of the company. Please respond in plain text only, without additional commentary or prompts.\n\n`;
-
-  console.log(companyDetailsJsonString);
+  const initialPrompt = `Given the company details in JSON format below, create a concise summary of the company. Please respond in plain text only, without additional commentary, prompts, markdown or html etc.\n\n`;
 
   const response = await fetch(`${OPENAI_API_URL}/v1/chat/completions`, {
     method: 'POST',

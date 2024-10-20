@@ -28,9 +28,9 @@ export default function Home() {
       } else {
         setCompanyApiDetails(null); // Reset to null if no data is returned
       }
-    } catch (err: any) {
-      console.log(err);
-      setError(err.message); // Set error message to state
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+      setError(errorMessage);
     } finally {
       setLoading(false); // Reset loading state after API call
     }
