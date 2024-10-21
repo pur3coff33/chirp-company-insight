@@ -13,7 +13,7 @@ export const SearchDomain: React.FC<{ search: (domain: string) => void }> = ({ s
 
     // Validate the domain input
     if (!regex.test(value)) {
-      setError('Please enter a valid domain (try google.com, apple.com, facebook.com, etc...)');
+      setError('Please enter a valid domain (try apple.com, facebook.com, etc...)');
     } else {
       setError(''); // Clear error if input is valid
     }
@@ -33,7 +33,7 @@ export const SearchDomain: React.FC<{ search: (domain: string) => void }> = ({ s
       <div className="flex gap-2 mt-4">
         <input
           type="text"
-          placeholder="Enter domain like google.com"
+          placeholder="Enter domain like apple.com..."
           className="border border-gray-300 rounded-lg shadow-lg p-3 w-full max-w-sm"
           value={domain}
           onChange={handleInputChange}
