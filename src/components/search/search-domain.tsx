@@ -4,8 +4,19 @@ export const SearchDomain: React.FC<{ search: (domain: string) => void }> = ({ s
   const [domain, setDomain] = useState<string>('');
   const [error, setError] = useState<string>('');
 
-  // Improved regex for validating domains (e.g., google.com, example.org)
-  const regex = /^(?!-)([a-zA-Z0-9]{1,63}(?<!-)\.)+[a-zA-Z]{2,}$/;
+  // Regex to validate domain names
+  const regex = /^(?!-)(?!.*--)([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*)?\.[a-zA-Z]{2,}$/;
+
+  // Breakdown of the regex components:
+  // ^                   : Asserts the start of the string.
+  // (?!-)               : Negative lookahead to ensure the string does not start with a dash (-).
+  // (?!.*--)            : Negative lookahead to prevent consecutive dashes (--) anywhere in the string.
+  // ([a-zA-Z0-9]+       : Matches one or more alphanumeric characters (a-z, A-Z, 0-9).
+  // (-[a-zA-Z0-9]+)*    : Allows for zero or more occurrences of a hyphen (-) followed by one or more alphanumeric characters.
+  // )?                  : The entire preceding group (domain label) is optional, allowing for domains without subdomains.
+  // \.                  : Matches a literal dot (.) that separates the domain labels from the TLD.
+  // [a-zA-Z]{2,}        : Matches the top-level domain (TLD), which must consist of at least two letters (e.g., .com, .org, etc.).
+  // $                   : Asserts the end of the string.
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

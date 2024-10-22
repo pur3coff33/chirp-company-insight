@@ -20,7 +20,7 @@ export default function Home() {
       });
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error.message);
+        throw new Error(errorData.message);
       }
       const { data } = await response.json();
       if (data) {

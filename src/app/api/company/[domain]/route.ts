@@ -15,8 +15,8 @@ export const GET = async (_request: NextRequest, { params }: { params: { domain:
     // fetch company data
     const companyData = await fetchCompanyDetails(domain);
 
-    if (!companyData) {
-      return NextResponse.json({ message: 'Company not found' }, { status: 404 });
+    if (!companyData || !companyData.data) {
+      return NextResponse.json({ message: !companyData ? 'Company not found' : companyData.message }, { status: 404 });
     }
 
     // use llm to generate company summary
